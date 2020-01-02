@@ -54,7 +54,7 @@ class ReservationController extends AbstractController
 
         $repoDate = $this->manager->getRepository(DateBlocked::class);
         $blocked = $repoDate->myfindAll();
-        $paypalClient = "https://www.paypal.com/sdk/js?client-id=" . $this->getParameter('PAYPAL_CLIENT_ID') . "&currency=EUR&debug=false&disable-card=amex&intent=authorize";
+        $paypalClient = "https://www.paypal.com/sdk/js?client-id=" . $this->getParameter('CLIENT_ID') . "&currency=EUR&debug=false&disable-card=amex&intent=authorize";
 
         return $this->render('reservation/index.html.twig', [
             'form' => $form->createView(), 'salle' => $salle, 'blocked' => $blocked, 'client' => $paypalClient
@@ -129,7 +129,7 @@ class ReservationController extends AbstractController
         $user = $this->getUser();
         $pay = $this->session->get('pay');
 
-        if ($this->check->verifPaiment($pay, $reservation)) {
+        if ($this->check->verifPaiment()) {
             $paiement = $this->manager->getRepository(Paypal::class)->find($pay);
 
             $reservation->setPaiement($paiement);
@@ -170,19 +170,19 @@ class ReservationController extends AbstractController
 
         $data = GetOrder::getOrder($data['id']);
        if ($data['status'] == 'COMPLETED') {
-            $paiment = new Paypal();
-            $paiment->setPaymentId($data['orderID']);
-            $paiment->setPaymentCurrency($data['currency']);
-            $paiment->setPaymentAmount($data['value']);
-            $paiment->setPaymentDate(new \DateTime());
-            $paiment->setPaymentStatus($data['status']);
-            $paiment->setPayerEmail($data['mail']);
-            $paiment->setUser($this->getUser());
-            $paiment->setCapture(0);
-            $this->manager->persist($paiment);
+            $paiement = new Paypal();
+            $paiement->setPaymentId($data['orderID']);
+            $paiement->setPaymentCurrency($data['currency']);
+            $paiement->setPaymentAmount($data['value']);
+            $paiement->setPaymentDate(new \DateTime());
+            $paiement->setPaymentStatus($data['status']);
+            $paiement->setPayerEmail($data['mail']);
+            $paiement->setUser($this->getUser());
+            $paiement->setCapture(0);
+            $this->manager->persist($paiement);
             $this->manager->flush();
 
-            $this->session->set('pay', $paiment);
+            $this->session->set('pay', $paiement);
 
             return $this->json(['success' => 'ok', 'resa' => true]);
         }
@@ -212,7 +212,7 @@ class ReservationController extends AbstractController
             return true;
         } catch (Exception $e) {
             $e->getMessage();
-            $this->manager->remove($paiment);
+            $this->manager->remove($paiement);
             $this->manager->remove($reservation);
             $this->manager->flush();
             $this->addFlash('danger', 'Un problème d\'approvissionement est survenu');

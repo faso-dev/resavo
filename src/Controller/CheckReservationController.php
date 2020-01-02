@@ -27,20 +27,22 @@ class CheckReservationController
 
     /**
      * Permet de verifier que le paiment envoyer est bien celui attendu
-     * @param Paypal $paiment
-     * @param Reservation $reservation
      * @return bool
      */
-    public function verifPaiment(Paypal $paiment, Reservation $reservation)
+    public function verifPaiment()
     {
+
+        //TODO A REDEFINIR
+        /*
         $salle = $reservation->getSalle();
         $nbPersonne = $reservation->getNbPersonne();
         $total = $paiment->getPaymentAmount();
 
 
-        //if (!$this->verifTotal($salle, $nbPersonne, $total)) {
-        //    throw new \LogicException("Nous avons detecté un problème sur le total à payer !", 1);
-        // }
+        if (!$this->verifTotal($salle, $nbPersonne, $total)) {
+            throw new \LogicException("Nous avons detecté un problème sur le total à payer !", 1);
+        }
+        */
 
         return true;
     }
