@@ -79,4 +79,5 @@ mdp: password
 * Bootstrap
 
 ## CREDIT
-Merci à @marlene78 pour la typo :D & félicitation pour ça premiere contrib. 👏👏
+Merci à @marlene78 pour la typo :D & félicitation pour sa première contrib. 👏👏
+
